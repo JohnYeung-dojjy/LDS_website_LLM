@@ -38,12 +38,12 @@ def setup_logger(logger: logging.Logger):
 def crawl_website(website_url: str) -> list[Document]:
     """
     Crawl the given website and return a list of Documents.
-    Crawling depth is set to 2. (get content from homepage and links on homepage)
+    Crawling depth is set to 3.
     """
     LOGGER.info(f"Crawling website: {website_url}")
     loader = RecursiveUrlLoader(
         url=website_url,
-        max_depth=2,  # how deep to follow links
+        max_depth=3,  # how deep to follow links
         extractor=lambda x: BeautifulSoup(x, "html.parser").get_text(),  # clean text
     )
     documents = loader.load()
