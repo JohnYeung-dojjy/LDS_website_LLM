@@ -1,0 +1,15 @@
+[project]
+name = "llm-demo"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "beautifulsoup4>=4.14.2",
+    "django>=5.2.8",
+    "langchain>=1.0.3",
+    "langchain-chroma>=1.0.0",
+    "langchain-community>=0.4.1",
+    "langchain-ollama>=1.0.0",
+    "langchain-text-splitters>=1.0.0",
+]

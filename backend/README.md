@@ -1,6 +1,7 @@
 # LLM demo
 
 This is a simple demo project showing that I know how to use LLM :)
+The RAG contains contents from the [LDS website](https://ldsociety.ca/)
 
 ## Tech stack
 
