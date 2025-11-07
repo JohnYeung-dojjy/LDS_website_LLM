@@ -2,6 +2,7 @@
 from langchain_ollama import OllamaEmbeddings
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import RecursiveUrlLoader
+from langchain_community.document_transformers import BeautifulSoupTransformer
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
@@ -35,6 +36,15 @@ def setup_logger(logger: logging.Logger):
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
 
+def simple_text_extractor(html: str) -> str:
+    soup = BeautifulSoup(html, "html.parser")
+    # Remove scripts, styles, etc.
+    for tag in soup(["script", "style", "nav", "footer"]):
+        tag.decompose()
+    # Extract visible text
+    text = soup.get_text(separator="\n", strip=True)
+    return text
+
 def crawl_website(website_url: str) -> list[Document]:
     """
     Crawl the given website and return a list of Documents.
@@ -43,10 +53,12 @@ def crawl_website(website_url: str) -> list[Document]:
     LOGGER.info(f"Crawling website: {website_url}")
     loader = RecursiveUrlLoader(
         url=website_url,
+        exclude_dirs=[f"{website_url}wp-content", f"{website_url}wp-json"],
         max_depth=3,  # how deep to follow links
-        extractor=lambda x: BeautifulSoup(x, "html.parser").get_text(),  # clean text
+        extractor=simple_text_extractor,  # clean text
     )
     documents = loader.load()
+    documents = split_documents(documents)
     LOGGER.debug([document.metadata["source"] for document in documents])
     LOGGER.info(f"Crawled {len(documents)} documents from {website_url}")
     return documents
